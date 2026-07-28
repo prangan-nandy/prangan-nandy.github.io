@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PN monogram">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#55d6ff"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#07111f"/>
+  <path d="M15 47V17h12.5c7.5 0 12 4 12 10.5S35 38 27.5 38H22v9h-7Zm7-15h5c3.5 0 5.5-1.5 5.5-4.5S31 23 27.5 23H22v9Z" fill="url(#g)"/>
+  <path d="M39 47V17h7l11 18V17h7v30h-7L46 29v18h-7Z" fill="#f7fbff" transform="translate(-5 0)"/>
+</svg>
