@@ -19,6 +19,7 @@
   --header-height: 78px;
 }
 
+
 html[data-theme="light"] {
   --bg: #f5f8fc;
   --bg-elevated: #ffffff;
