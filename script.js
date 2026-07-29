@@ -7,65 +7,89 @@ const themeToggle = document.querySelector('.theme-toggle');
 const yearElement = document.querySelector('#current-year');
 
 // Keep the footer year current automatically.
-yearElement.textContent = new Date().getFullYear();
+if (yearElement) {
+  yearElement.textContent = new Date().getFullYear();
+}
 
-// Add a translucent background to the navigation after scrolling.
+// Add a subtle navigation background after scrolling.
 const updateHeader = () => {
-  header.classList.toggle('scrolled', window.scrollY > 18);
+  if (header) {
+    header.classList.toggle('scrolled', window.scrollY > 18);
+  }
 };
+
 updateHeader();
 window.addEventListener('scroll', updateHeader, { passive: true });
 
 // Mobile navigation.
 const closeMenu = () => {
+  if (!menuToggle || !navLinks) return;
+
   menuToggle.setAttribute('aria-expanded', 'false');
   menuToggle.setAttribute('aria-label', 'Open navigation menu');
   navLinks.classList.remove('open');
   body.classList.remove('menu-open');
 };
 
-menuToggle.addEventListener('click', () => {
-  const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
-  menuToggle.setAttribute('aria-expanded', String(!isOpen));
-  menuToggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
-  navLinks.classList.toggle('open', !isOpen);
-  body.classList.toggle('menu-open', !isOpen);
-});
+if (menuToggle && navLinks) {
+  menuToggle.addEventListener('click', () => {
+    const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
 
-navLinks.querySelectorAll('a').forEach((link) => {
-  link.addEventListener('click', closeMenu);
-});
+    menuToggle.setAttribute('aria-expanded', String(!isOpen));
+    menuToggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
+    navLinks.classList.toggle('open', !isOpen);
+    body.classList.toggle('menu-open', !isOpen);
+  });
 
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 880) closeMenu();
-});
+  navLinks.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
 
-// Theme preference: remember the user's choice; otherwise use system preference.
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 880) closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeMenu();
+      menuToggle.focus();
+    }
+  });
+}
+
+// Theme preference: remember the user's choice; otherwise use dark mode.
 let savedTheme = null;
 try {
   savedTheme = localStorage.getItem('portfolio-theme');
 } catch (error) {
-  // Storage can be unavailable in strict privacy modes; the site still works.
+  // Storage may be unavailable in strict privacy modes; the site still works.
 }
 root.dataset.theme = savedTheme || 'dark';
 
 const updateThemeLabel = () => {
+  if (!themeToggle) return;
+
   const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
   themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
   themeToggle.setAttribute('title', `Switch to ${nextTheme} theme`);
 };
+
 updateThemeLabel();
 
-themeToggle.addEventListener('click', () => {
-  const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-  root.dataset.theme = nextTheme;
-  try {
-    localStorage.setItem('portfolio-theme', nextTheme);
-  } catch (error) {
-    // Ignore storage errors and keep the theme change for the current visit.
-  }
-  updateThemeLabel();
-});
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = nextTheme;
+
+    try {
+      localStorage.setItem('portfolio-theme', nextTheme);
+    } catch (error) {
+      // Ignore storage errors and keep the theme for the current visit.
+    }
+
+    updateThemeLabel();
+  });
+}
 
 // Reveal content as it enters the viewport.
 const revealItems = document.querySelectorAll('.reveal');
@@ -94,6 +118,7 @@ if ('IntersectionObserver' in window) {
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
+
       navigationAnchors.forEach((link) => {
         link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
       });
